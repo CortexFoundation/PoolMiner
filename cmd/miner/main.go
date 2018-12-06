@@ -10,7 +10,7 @@ import (
 	"log"
 	"math/rand"
 	"net"
-	"os"
+//	"os"
 	"time"
 
 	"github.com/PoolMiner/common"
@@ -19,7 +19,8 @@ import (
 	"github.com/PoolMiner/verify"
 
 	"sync"
-	"sync/atomic"
+	"strings"
+	"strconv"
 )
 
 type Miner interface {
@@ -30,9 +31,17 @@ type Connection struct {
 	lock  sync.Mutex
 	state bool
 }
+type DeviceId struct {
+	lock sync.Mutex
+	deviceId uint32
+	use_time int64
+	solution_count int64
+}
+
 type Cortex struct {
 	server, account        string
-	deviceId, verboseLevel uint
+	deviceIds		[]DeviceId
+	verboseLevel uint
 	conn                   *net.TCPConn
 	reader                 *bufio.Reader
 	consta                 Connection
@@ -52,10 +61,10 @@ type ReqObj struct {
 	Params  []string `json:"params"`
 }
 
-func checkError(err error) {
+func checkError(err error, func_name string) {
 	if err != nil {
-		log.Println("%s", err.Error())
-		os.Exit(1)
+		log.Println(func_name, err.Error())
+//		os.Exit(1)
 	}
 }
 
@@ -72,7 +81,7 @@ func (cm *Cortex) read() map[string]interface{} {
 			cm.consta.lock.Unlock()
 			return nil
 		}
-		checkError(err)
+		checkError(err, "read()")
 		rep = append(rep, tmp...)
 		if isPrefix == false {
 			break
@@ -81,13 +90,13 @@ func (cm *Cortex) read() map[string]interface{} {
 	// fmt.Println("received ", len(rep), " bytes: ", string(rep), "\n")
 	var repObj map[string]interface{}
 	err := json.Unmarshal(rep, &repObj)
-	checkError(err)
+	checkError(err, "read()")
 	return repObj
 }
 
 func (cm *Cortex) write(reqObj ReqObj) {
 	req, err := json.Marshal(reqObj)
-	checkError(err)
+	checkError(err, "write()")
 
 	req = append(req, uint8('\n'))
 	_, _ = cm.conn.Write(req)
@@ -100,10 +109,10 @@ func (cm *Cortex) init() *net.TCPConn {
 	//cm.server = "localhost:8009"
 	//cm.account = "0xc3d7a1ef810983847510542edfd5bc5551a6321c"
 	tcpAddr, err := net.ResolveTCPAddr("tcp", cm.server)
-	checkError(err)
+	checkError(err, "init()")
 
 	cm.conn, err = net.DialTCP("tcp", nil, tcpAddr)
-	checkError(err)
+	checkError(err, "init()")
 	cm.consta.lock.Lock()
 	cm.consta.state = true
 	cm.consta.lock.Unlock()
@@ -148,9 +157,11 @@ func (cm *Cortex) submit(sol Task) {
 
 //	cortex mining
 func (cm *Cortex) Mining() {
-	libcuckoo.CuckooInitialize(cm.deviceId)
-	var sol_count int64 = 0
-	var all_time int64 = 0
+	var iDeviceIds []uint32
+	for i := 0; i < len(cm.deviceIds); i++{
+		iDeviceIds = append(iDeviceIds, cm.deviceIds[i].deviceId)
+	}
+	libcuckoo.CuckooInitialize(iDeviceIds, (uint32)(len(iDeviceIds)))
 
 	for {
 		for {
@@ -164,11 +175,11 @@ func (cm *Cortex) Mining() {
 				break
 			}
 		}
-		cm.miningOnce(&sol_count, &all_time)
+		cm.miningOnce()
 	}
 }
 
-func (cm *Cortex) miningOnce(sol_count *int64, all_time *int64) {
+func (cm *Cortex) miningOnce() {
 	type TaskWrapper struct {
 		Lock  sync.Mutex
 		TaskQ Task
@@ -176,10 +187,9 @@ func (cm *Cortex) miningOnce(sol_count *int64, all_time *int64) {
 
 	var currentTask TaskWrapper
 	var taskHeader, taskNonce, taskDifficulty string
-	var THREAD uint = 1
+	var THREAD uint = (uint)(len(cm.deviceIds))
 	rand.Seed(time.Now().UTC().UnixNano())
 	solChan := make(chan Task, THREAD)
-
 	for nthread := 0; nthread < int(THREAD); nthread++ {
 		go func(tidx uint32, currentTask_ *TaskWrapper) {
 			var start_time int64 = time.Now().UnixNano() / 1e6
@@ -199,10 +209,9 @@ func (cm *Cortex) miningOnce(sol_count *int64, all_time *int64) {
 				var result common.BlockSolution
 				curNonce := uint64(rand.Int63())
 				// fmt.Println("task: ", header[:], curNonce)
-
-				cm.consta.lock.Lock()
-				status, sols := libcuckoo.FindSolutionsByGPU(header, curNonce)
-				cm.consta.lock.Unlock()
+				cm.deviceIds[tidx].lock.Lock()
+				status, sols := libcuckoo.FindSolutionsByGPU(header, curNonce, tidx)
+				cm.deviceIds[tidx].lock.Unlock()
 				if status != 0 {
 					if verboseLevel >= 3 {
 						log.Println("result: ", status, sols)
@@ -226,9 +235,9 @@ func (cm *Cortex) miningOnce(sol_count *int64, all_time *int64) {
 								log.Println("verify successed", header[:], curNonce, &sol)
 								solChan <- Task{Nonce: nonceStr, Header: taskHeader, Solution: digest}
 								end_time := time.Now().UnixNano() / 1e6
-								atomic.AddInt64(all_time, (end_time - start_time))
-								atomic.AddInt64(sol_count, 1)
-								log.Println(fmt.Sprintf("solutions=%v, all_time = %vms, avg_time = %vms", *sol_count, *all_time, (*all_time)/(*sol_count)))
+								cm.deviceIds[tidx].use_time += (end_time - start_time)
+								cm.deviceIds[tidx].solution_count += 1
+								log.Println(fmt.Sprintf("thread %v: solutions=%v, all_time = %vms, avg_time = %vms", tidx, cm.deviceIds[tidx].solution_count, cm.deviceIds[tidx].use_time, (cm.deviceIds[tidx].use_time)/(cm.deviceIds[tidx].solution_count)))
 								start_time = end_time
 							}
 						}
@@ -288,17 +297,29 @@ func init() {
 	flag.BoolVar(&help, "help", false, "show help")
 	flag.StringVar(&remote, "pool_uri", "miner-cn.cortexlabs.ai:8009", "mining pool address")
 	flag.StringVar(&account, "account", "0xc3d7a1ef810983847510542edfd5bc5551a6321c", "miner accounts")
-	flag.IntVar(&deviceId, "deviceid", 0, "which GPU device use for mining")
+	flag.StringVar(&strDeviceId, "deviceids", "0", "which GPU device use for mining")
 	flag.IntVar(&verboseLevel, "verbosity", 0, "verbosity level")
 }
 
 var help bool
 var remote, account string
-var deviceId int
+var strDeviceId string
 var verboseLevel int
 
 func main() {
 	flag.Parse()
+	var strDeviceIds []string = strings.Split(strDeviceId, ",")
+	var deviceNum int = len(strDeviceIds)
+	var deviceIds []DeviceId
+	for i := 0; i < deviceNum; i++{
+		var lock sync.Mutex
+		v, error := strconv.Atoi(strDeviceIds[i])
+		if error != nil || v < 0{
+			fmt.Println("parse deviceIds error ", error)
+			return
+		}
+		deviceIds = append(deviceIds, DeviceId{lock, (uint32)(v), 0, 0})
+	}
 
 	if help {
 		fmt.Println("Usage:\ngo run miner.go -r remote -a account -c gpu\nexample:go run miner.go -r localhost:8009 -a 0xc3d7a1ef810983847510542edfd5bc5551a6321c")
@@ -309,7 +330,7 @@ func main() {
 	var cm Miner = &Cortex{
 		account:      account,
 		server:       remote,
-		deviceId:     uint(deviceId),
+		deviceIds:     deviceIds,
 		verboseLevel: uint(verboseLevel),
 	}
 
