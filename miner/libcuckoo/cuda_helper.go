@@ -1,6 +1,6 @@
 // +build cuda
 
-package libcuckoo
+package main
 
 /*
 #cgo LDFLAGS: -L./ -lcudaminer -L/usr/local/cuda/lib64 -lcudart -lstdc++ -lnvidia-ml
