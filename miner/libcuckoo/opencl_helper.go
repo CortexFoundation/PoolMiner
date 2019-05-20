@@ -1,6 +1,6 @@
 // +build opencl
 
-package libcuckoo
+package main
 
 /*
 #cgo LDFLAGS: -L./ -lopenclminer -L/usr/local/cuda-10.0/lib64 -lOpenCL -lstdc++
@@ -109,12 +109,10 @@ func verifySolution(status uint32, sols [][]uint32, tgtDiff common.Hash, curNonc
 				nonceStr := common.Uint64ToHexString(uint64(curNonce))
 				digest := common.Uint32ArrayToHexString([]uint32(result[:]))
 				var ok int
-				var edgebits uint8 = 28
-				var proofsize uint8 = 12
 				if param.Algorithm == 0 {
-					ok = CuckooVerifyProof(header[:], curNonce, &sol[0], proofsize, edgebits)
+					ok = CuckooVerifyProof(header[:], curNonce, &sol[0])
 				} else {
-					ok = CuckooVerifyProof_cuckaroo(header[:], curNonce, &sol[0], proofsize, edgebits)
+					ok = CuckooVerifyProof_cuckaroo(header[:], curNonce, &sol[0])
 				}
 				if ok != 1 {
 					log.Println("verify failed", header[:], curNonce, &sol)
@@ -127,7 +125,7 @@ func verifySolution(status uint32, sols [][]uint32, tgtDiff common.Hash, curNonc
 	}
 }
 
-func RunSolverOnCPU(THREAD int, deviceInfos []config.DeviceInfo, param config.Param, solChan chan config.Task, state bool) (status_code uint32, ret [][]uint32){
+func RunSolver(THREAD int, deviceInfos []config.DeviceInfo, param config.Param, solChan chan config.Task, state bool) (status_code uint32, ret [][]uint32){
 	rand.Seed(time.Now().UTC().UnixNano())
 	nedgesChan := make(chan config.StreamData, THREAD)
 	for nthread := 0; nthread < int(THREAD); nthread++ {
@@ -188,25 +186,21 @@ func RunSolverOnCPU(THREAD int, deviceInfos []config.DeviceInfo, param config.Pa
 	return 0,ret
 }
 
-func CuckooVerifyProof(hash []byte, nonce uint64, result *uint32, proofSize uint8, edgeBits uint8) int {
+func CuckooVerifyProof(hash []byte, nonce uint64, result *uint32) int {
 	tmpHash := hash
 	r := C.CuckooVerifyProof(
 		(*C.uint8_t)(unsafe.Pointer(&tmpHash[0])),
 		C.uint64_t(uint(nonce)),
-		(*C.uint32_t)(unsafe.Pointer((result))),
-		(C.uint8_t)(proofSize),
-		(C.uint8_t)(edgeBits))
+		(*C.uint32_t)(unsafe.Pointer((result))))
 	return int(r)
 }
 
 
-func CuckooVerifyProof_cuckaroo(hash []byte, nonce uint64, result *uint32, proofSize uint8, edgeBits uint8) int {
+func CuckooVerifyProof_cuckaroo(hash []byte, nonce uint64, result *uint32) int {
 	tmpHash := hash
 	r := C.CuckooVerifyProof_cuckaroo(
 		(*C.uint8_t)(unsafe.Pointer(&tmpHash[0])),
 		C.uint64_t(uint(nonce)),
-		(*C.uint32_t)(unsafe.Pointer((result))),
-		(C.uint8_t)(proofSize),
-		(C.uint8_t)(edgeBits))
+		(*C.uint32_t)(unsafe.Pointer((result))))
 	return int(r)
 }
