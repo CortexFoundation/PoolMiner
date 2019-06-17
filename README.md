@@ -15,7 +15,7 @@ source ~/.bashrc
 3. make
 4. ./build/bin/cortex_miner -pool_uri=ip:port -devices=0,1,2,3 account=51c56404a3f7c7f5be03f61c4497eea3d654767e
 
-# PoolMiner
+# CortexMiner
 1. [参考1](https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true)
 2. [参考2](https://github.com/tromp/cuckoo)
 
