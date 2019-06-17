@@ -1,8 +1,14 @@
 # install
 1. cuda9.2+
 2. nvidia driver 396+
-3. go 1.10.0+
-4. make 
+3. go 1.10.0+ (编译源码需要)
+```
+wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.11.5.linux-amd64.tar.gz
+echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
+source ~/.bashrc
+```
+4. make
 5. ./build/bin/cortex_miner -pool_uri=ip:port -devices=0,1,2,3...
 
 # PoolMiner
