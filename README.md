@@ -1,3 +1,10 @@
+# install
+1. cuda9.2+
+2. nvidia driver 396+
+3. go 1.10.0+
+4. make 
+5. ./build/bin/cortex_miner -pool_uri=ip:port -devices=0,1,2,3...
+
 # PoolMiner
 1. [参考1](https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true)
 2. [参考2](https://github.com/tromp/cuckoo)
