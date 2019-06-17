@@ -1,15 +1,19 @@
-# install
-1. cuda9.2+
-2. nvidia driver 396+
-3. go 1.10.0+ (编译源码需要)
+# 安装配置
+1. 安装nvidia driver 396+, cuda9.2+（https://www.cnblogs.com/orzs/p/10951473.html）
+```
+添加环境变量：
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:$LIBRARY_PATH
+```
+2. go 1.10.0+ (编译源码需要)
 ```
 wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.11.5.linux-amd64.tar.gz
 echo 'export PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
 source ~/.bashrc
 ```
-4. make
-5. ./build/bin/cortex_miner -pool_uri=ip:port -devices=0,1,2,3...
+3. make
+4. ./build/bin/cortex_miner -pool_uri=ip:port -devices=0,1,2,3 account=51c56404a3f7c7f5be03f61c4497eea3d654767e
 
 # PoolMiner
 1. [参考1](https://github.com/tromp/cuckoo/blob/master/doc/cuckoo.pdf?raw=true)
