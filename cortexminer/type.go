@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"sync"
 	"net"
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/config"
+	"github.com/CortexFoundation/PoolMiner/config"
 )
 
 type Miner interface {

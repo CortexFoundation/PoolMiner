@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/config"
+	"github.com/CortexFoundation/PoolMiner/config"
 
 	"plugin"
 	"strconv"
@@ -22,7 +22,7 @@ type ReqLogin struct{
         Jsonrpc string   `json:"jsonrpc"`
         Method  string   `json:"method"`
         Params  []string `json:"params"`
-	Worker string `json:"worker"`
+	Worker string `json:"workername"`
 }
 func checkError(err error, func_name string) {
 	if err != nil {
@@ -75,15 +75,12 @@ func (cm *Cortex) write(reqObj ReqObj) {
 	}
 }
 func (cm *Cortex) write_login(reqObj ReqLogin) {
-	log.Println("login ............................")
 	req, err := json.Marshal(reqObj)
-	log.Println(req)
 	if err != nil {
 		return
 	}
 
 	req = append(req, uint8('\n'))
-	log.Println(req)
 	if cm.conn != nil {
 		go cm.conn.Write(req)
 	}
@@ -119,15 +116,12 @@ func (cm *Cortex) init(tcpCh chan bool) {
 
 //	miner login to mining pool
 func (cm *Cortex) login(loginCh chan bool) {
-	log.Println("Cortex login ++++++++++++...")
-	log.Println(".........")
-	log.Println("accout : ", cm.param.Account)
 	var reqLogin = ReqLogin{
-		Id:      73,
+		Id:      72,
 		Jsonrpc: "2.0",
 		Method:  "ctxc_submitLogin",
 		Params:  []string{cm.param.Account},
-		Worker : "zkh",
+		Worker : cm.param.Worker_name,
 	}
 
 	cm.write_login(reqLogin)

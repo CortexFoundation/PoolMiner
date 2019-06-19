@@ -7,8 +7,8 @@ import (
 	"strings"
 	"strconv"
 	"sync"
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/cortexminer"
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/config"
+	"github.com/CortexFoundation/PoolMiner/cortexminer"
+	"github.com/CortexFoundation/PoolMiner/config"
 	"runtime"
 )
 
@@ -16,7 +16,7 @@ func init() {
 	flag.BoolVar(&help, "help", false, "show help")
 	flag.StringVar(&remote, "pool_uri", "47.91.2.19:8009", "mining pool address")
 	flag.StringVar(&account, "account", "0xc3d7a1ef810983847510542edfd5bc5551a6321c", "miner accounts")
-	flag.StringVar(&worker_name, "worker_name", "wroker_name", "worker name")
+	flag.StringVar(&worker_name, "worker_name", "wroker1", "worker name")
 	flag.StringVar(&strDeviceId, "devices", "0", "which GPU device use for mining")
 	flag.IntVar(&verboseLevel, "verbosity", 0, "verbosity level")
 
@@ -53,7 +53,7 @@ func main() {
 	if help {
 		fmt.Println("Usage:\ngo run miner.go -r remote -a account -c gpu\nexample:go run miner.go -r localhost:8009 -a 0xc3d7a1ef810983847510542edfd5bc5551a6321c")
 	} else {
-		fmt.Println(account+":"+worker_name, remote)
+		fmt.Println(account, remote)
 	}
 
 	var param config.Param
@@ -61,7 +61,8 @@ func main() {
 	fmt.Println(account)
 	cm  := cortex.New(
 		deviceInfos,
-		param.New(remote, account, uint(verboseLevel), 1, 1, false, true, false))
+		param.New(remote, account, worker_name, uint(verboseLevel), 1, 1, false, true, false))
 
+	fmt.Println("............")
 	cm.Mining()
 }
