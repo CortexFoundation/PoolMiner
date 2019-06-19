@@ -11,12 +11,19 @@ import (
 	"os"
 	"time"
 
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/config"
+	"github.com/CortexFoundation/PoolMiner/config"
 
 	"plugin"
 	"strconv"
 )
 
+type ReqLogin struct{
+        Id      int      `json:"id"`
+        Jsonrpc string   `json:"jsonrpc"`
+        Method  string   `json:"method"`
+        Params  []string `json:"params"`
+	Worker string `json:"workername"`
+}
 func checkError(err error, func_name string) {
 	if err != nil {
 		log.Println(func_name, err.Error())
@@ -67,6 +74,17 @@ func (cm *Cortex) write(reqObj ReqObj) {
 		go cm.conn.Write(req)
 	}
 }
+func (cm *Cortex) write_login(reqObj ReqLogin) {
+	req, err := json.Marshal(reqObj)
+	if err != nil {
+		return
+	}
+
+	req = append(req, uint8('\n'))
+	if cm.conn != nil {
+		go cm.conn.Write(req)
+	}
+}
 
 func (cm *Cortex) init(tcpCh chan bool) {
 	log.Println("Cortex connecting")
@@ -98,16 +116,17 @@ func (cm *Cortex) init(tcpCh chan bool) {
 
 //	miner login to mining pool
 func (cm *Cortex) login(loginCh chan bool) {
-	log.Println("Cortex login ...")
-	var reqLogin = ReqObj{
-		Id:      73,
+	var reqLogin = ReqLogin{
+		Id:      72,
 		Jsonrpc: "2.0",
 		Method:  "ctxc_submitLogin",
 		Params:  []string{cm.param.Account},
+		Worker : cm.param.Worker_name,
 	}
-	cm.write(reqLogin)
+
+	cm.write_login(reqLogin)
 	cm.getWork()
-	log.Println("Cortex login successfully")
+	log.Println("Cortex login successfully .....")
 	loginCh <- true
 }
 
@@ -158,6 +177,9 @@ func (cm *Cortex) Mining() {
 
 	var err error
 	minerPlugin, err = plugin.Open(PLUGIN_PATH + minerName + PLUGIN_POST_FIX)
+	if err != nil {
+		panic(err)
+	}
 	m, err := minerPlugin.Lookup("CuckooInitialize")
 	if err != nil {
 		panic(err)

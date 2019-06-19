@@ -28,5 +28,6 @@ export GOPATH GOBIN
 cd "$ethdir/PoolMiner"
 PWD="$ethdir/PoolMiner"
 
+echo $PWD
 # Launch the arguments with the configured environment.
 exec "$@"

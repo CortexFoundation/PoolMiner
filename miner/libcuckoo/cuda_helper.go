@@ -3,7 +3,7 @@
 package main
 
 /*
-#cgo LDFLAGS: -L./ -lcudaminer -L/usr/local/cuda/lib64 -lcudart -lstdc++ -lnvidia-ml
+#cgo LDFLAGS: -L./ -lcudaminer  -lcudart -lstdc++ -lnvidia-ml
 #cgo CFLAGS: -I./
 
 #include "miner.h"
@@ -14,9 +14,9 @@ import (
 	"log"
 	//	"time"
 	"encoding/hex"
-	"github.com/CortexFoundation/CortexTheseus/PoolMiner/common"
-        "github.com/CortexFoundation/CortexTheseus/PoolMiner/config"
-        "github.com/CortexFoundation/CortexTheseus/PoolMiner/crypto"
+	"github.com/CortexFoundation/PoolMiner/common"
+        "github.com/CortexFoundation/PoolMiner/config"
+        "github.com/CortexFoundation/PoolMiner/crypto"
 	"math/rand"
 	"time"
 	"unsafe"
