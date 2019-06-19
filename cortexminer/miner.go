@@ -22,7 +22,7 @@ type ReqLogin struct{
         Jsonrpc string   `json:"jsonrpc"`
         Method  string   `json:"method"`
         Params  []string `json:"params"`
-	Worker string `json:"workername"`
+	Worker string `json:"worker"`
 }
 func checkError(err error, func_name string) {
 	if err != nil {
@@ -143,13 +143,15 @@ func (cm *Cortex) getWork() {
 
 //	submit task
 func (cm *Cortex) submit(sol config.Task) {
-	var reqSubmit = ReqObj{
+	log.Println(cm.param.Worker_name)
+	var reqSubmit = ReqLogin{
 		Id:      73,
 		Jsonrpc: "2.0",
 		Method:  "ctxc_submitWork",
 		Params:  []string{sol.Nonce, sol.Header, sol.Solution},
+		Worker: cm.param.Worker_name,
 	}
-	cm.write(reqSubmit)
+	cm.write_login(reqSubmit)
 }
 
 var minerPlugin *plugin.Plugin
