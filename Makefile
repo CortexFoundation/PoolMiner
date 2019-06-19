@@ -9,7 +9,7 @@ PLUGINS_DIR = $(shell pwd)/plugins
 CORTEXPATH = $(shell pwd)/../build/_workspace
 
 all:
-	build/env.sh go get -tags remote -v ./...
+	build/env.sh go get -tags -v ./...
 	make -C ${LIB_CUCKOO_DIR}
 	build/env.sh go build -buildmode=plugin -o ${PLUGINS_DIR}/cuda_helper.so ./miner/libcuckoo/cuda_helper.go
 	build/env.sh go build -buildmode=plugin -o ${PLUGINS_DIR}/opencl_helper.so ./miner/libcuckoo/opencl_helper.go

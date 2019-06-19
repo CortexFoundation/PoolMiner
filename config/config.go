@@ -10,6 +10,13 @@ type Task struct {
 	Solution   string
 	Difficulty string
 }
+type ReqObj struct {
+        Id      int      `json:"id"`
+        Jsonrpc string   `json:"jsonrpc"`
+        Method  string   `json:"method"`
+        Params  []string `json:"params"`
+}
+
 
 type TaskWrapper struct {
 	Lock  sync.Mutex
