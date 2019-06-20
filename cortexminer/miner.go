@@ -143,7 +143,6 @@ func (cm *Cortex) getWork() {
 
 //	submit task
 func (cm *Cortex) submit(sol config.Task) {
-	log.Println(cm.param.Worker_name)
 	var reqSubmit = ReqLogin{
 		Id:      73,
 		Jsonrpc: "2.0",

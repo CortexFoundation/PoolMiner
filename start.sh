@@ -13,9 +13,10 @@ do
  fi
 done
 
-worker='zkh'
+worker=`hostname`
 pool_uri='cuckoo.cortexlabs.ai:8008'
 device=$str
 account='0x2dadd26ed620609751eb439edfb2490fce08829a'
 start='./build/bin/cortex_miner -pool_uri='$pool_uri' -worker='$worker' -devices='$str' account='$account #0x2dadd26ed620609751eb439edfb2490fce08829a'
 echo $start
+$start
