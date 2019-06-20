@@ -7,7 +7,7 @@ GCC_ARCH_FLAGS ?= -march=native
 GPP_ARCH_FLAGS ?= -march=native
 
 # -Wno-deprecated-declarations shuts up Apple OSX clang
-FLAGS ?= -O3 -Wall -Wno-format -Wno-deprecated-declarations -D_POSIX_C_SOURCE=200112L $(OPT) -DPREFETCH -I. -Isrc/opencl/ocl/include/ $(CPPFLAGS) -pthread -fPIC
+FLAGS ?= -O3 -Wall -Wno-format -Wno-deprecated-declarations -D_POSIX_C_SOURCE=200112L $(OPT) -DPREFETCH -I. $(CPPFLAGS) -pthread -fPIC
 GPP ?= g++ $(GPP_ARCH_FLAGS) -std=c++11 $(FLAGS)
 CFLAGS ?= -Wall -Wno-format -fomit-frame-pointer $(OPT)
 GCC ?= gcc $(GCC_ARCH_FLAGS) -std=gnu11 $(CFLAGS)
@@ -18,7 +18,7 @@ NVCC ?= nvcc $(CUDA_FLAGS)
 PROOFSIZE=42
 EDGEBITS=30
 
-all: cuda opencl cpu
+all: cuda 
 
 cuda : libcudaminer.a
 	
