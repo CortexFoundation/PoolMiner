@@ -11,6 +11,9 @@ FLAGS ?= -O3 -Wall -Wno-format -Wno-deprecated-declarations -D_POSIX_C_SOURCE=20
 GPP ?= g++ $(GPP_ARCH_FLAGS) -std=c++11 $(FLAGS)
 CFLAGS ?= -Wall -Wno-format -fomit-frame-pointer $(OPT)
 GCC ?= gcc $(GCC_ARCH_FLAGS) -std=gnu11 $(CFLAGS)
+CUDA_FLAGS ?= -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 \
+			  -gencode arch=compute_60,code=sm_60 -gencode arch=compute_61,code=sm_61 -gencode arch=compute_70,code=sm_70 
+NVCC ?= nvcc $(CUDA_FLAGS) 
 
 PROOFSIZE=42
 EDGEBITS=30
@@ -34,16 +37,15 @@ siphash.o: src/siphash.cc src/siphash.h
 
 
 cudaN31L14.o.trimmer.o: src/siphash.cuh src/cuda/cuckoo_solver.hpp src/cuda/cuckaroo_solver.hpp src/cuda/miner.cu src/cuda/trimmer.cu src/cuda/monitor.hpp Makefile
-	nvcc -Xcompiler="-fPIC" -std=c++11 -O3 -c -o $@ -rdc=true -DEDGEBITS=${EDGEBITS} -DPROOFSIZE=${PROOFSIZE} -arch sm_35 -D_FORCE_INLINES src/cuda/trimmer.cu $(LIBS)
+	$(NVCC) -Xcompiler="-fPIC" -std=c++11 -O3 -c -o $@ -rdc=true -DEDGEBITS=${EDGEBITS} -DPROOFSIZE=${PROOFSIZE} -arch sm_35 -D_FORCE_INLINES src/cuda/trimmer.cu $(LIBS)
 
 cudaN31L14.o.mean.o: src/siphash.cuh src/cuda/cuckoo_solver.hpp src/cuda/cuckaroo_solver.hpp src/cuda/miner.cu src/cuda/trimmer.cu src/cuda/monitor.hpp Makefile
-	nvcc -Xcompiler="-fPIC" -std=c++11 -O3 -c -o $@ -rdc=true -DEDGEBITS=${EDGEBITS} -DPROOFSIZE=${PROOFSIZE} -arch sm_35 -D_FORCE_INLINES src/cuda/miner.cu $(LIBS) -lnvidia-ml
+	$(NVCC) -Xcompiler="-fPIC" -std=c++11 -O3 -c -o $@ -rdc=true -DEDGEBITS=${EDGEBITS} -DPROOFSIZE=${PROOFSIZE} -arch sm_35 -D_FORCE_INLINES src/cuda/miner.cu $(LIBS) -lnvidia-ml
 
 cudaN31L14.o: cudaN31L14.o.trimmer.o cudaN31L14.o.mean.o
 	@echo 'NVCC '$@
-	nvcc -Xcompiler="-fPIC" -ccbin g++ -O3 -std=c++11 -m64 -Xcompiler \
-		-fpermissive -gencode arch=compute_35,code=sm_35 -D_FORCE_INLINES \
-		-rdc=true -dlink -o $@ $^ 
+	$(NVCC) -Xcompiler="-fPIC" -ccbin g++ -O3 -std=c++11 -m64 -Xcompiler \
+		-fpermissive -D_FORCE_INLINES -rdc=true -dlink -o $@ $^ 
 
 openclN31L14.o.mean.o: src/siphash.cuh src/opencl/cuckoo_solver.hpp src/opencl/cuckaroo_solver.hpp src/opencl/miner.cpp src/opencl/trimmer.cpp src/opencl/monitor.hpp Makefile
 	$(GPP) -c -U__STRICT_ANSI__ -o $@ -DEDGEBITS=${EDGEBITS} -DPROOFSIZE=${PROOFSIZE} src/opencl/trimmer.cpp
