@@ -51,7 +51,7 @@ func main() {
 		deviceInfos = append(deviceInfos, deviceInfo.New(lock, (uint32)(v), start_time, 0, 0, 0, 0))
 	}
 	if help {
-		fmt.Println("Usage:\ngo run miner.go -r remote -a account -c gpu\nexample:go run miner.go -r localhost:8009 -a 0xc3d7a1ef810983847510542edfd5bc5551a6321c")
+		fmt.Println("Usage:\n ./build/bin/cortex_miner -worker -pool_uri -account -devices\nexample:-pool_uri=localhost:8009 -account=0xc3d7a1ef810983847510542edfd5bc5551a6321c -devices=0,1")
 	} else {
 		fmt.Println(account, remote)
 	}
