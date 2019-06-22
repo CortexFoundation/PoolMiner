@@ -89,12 +89,8 @@ func (cm *Cortex) write_login(reqObj ReqLogin) {
 func (cm *Cortex) init(tcpCh chan bool) {
 	log.Println("Cortex connecting")
 	var server string = ""
-	if cm.param.ServerIndex == 0{
-		server = cm.param.Server
-	}else{
-		server = cm.param.Server_candidate
-	}
-	cm.param.ServerIndex = (cm.param.ServerIndex + 1) % 2
+	server = cm.param.Server[cm.param.ServerIndex]
+	cm.param.ServerIndex = (cm.param.ServerIndex + 1) % 3
 	log.Println("try connect remote pool : ", server)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", server)

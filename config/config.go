@@ -33,8 +33,7 @@ type StreamData struct{
 
 
 type Param struct {
-	Server string
-	Server_candidate string
+	Server [3]string
 	Account string
 	VerboseLevel    uint
 	Algorithm int
@@ -56,9 +55,10 @@ type DeviceInfo struct {
 	Gps            int64
 }
 
-func (param Param) New(server string, server_candidate string, account string, worker_name string, verboseLevel uint, algorithm int, threads int, cpu bool, cuda bool, opencl bool) Param{
-	param.Server = server
-	param.Server_candidate = server_candidate
+func (param Param) New(server string, server1 string, server2 string, account string, worker_name string, verboseLevel uint, algorithm int, threads int, cpu bool, cuda bool, opencl bool) Param{
+	param.Server[0] = server
+	param.Server[1] = server1
+	param.Server[2] = server2
 	param.Account = account
 	param.VerboseLevel = verboseLevel
 	param.Algorithm = algorithm
