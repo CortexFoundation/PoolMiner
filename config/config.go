@@ -34,6 +34,7 @@ type StreamData struct{
 
 type Param struct {
 	Server string
+	Server_candidate string
 	Account string
 	VerboseLevel    uint
 	Algorithm int
@@ -42,6 +43,7 @@ type Param struct {
 	Cuda bool
 	Opencl bool
 	Worker_name string
+	ServerIndex int
 }
 
 type DeviceInfo struct {
@@ -54,8 +56,9 @@ type DeviceInfo struct {
 	Gps            int64
 }
 
-func (param Param) New(server string, account string, worker_name string, verboseLevel uint, algorithm int, threads int, cpu bool, cuda bool, opencl bool) Param{
+func (param Param) New(server string, server_candidate string, account string, worker_name string, verboseLevel uint, algorithm int, threads int, cpu bool, cuda bool, opencl bool) Param{
 	param.Server = server
+	param.Server_candidate = server_candidate
 	param.Account = account
 	param.VerboseLevel = verboseLevel
 	param.Algorithm = algorithm
@@ -64,6 +67,7 @@ func (param Param) New(server string, account string, worker_name string, verbos
 	param.Cuda = cuda
 	param.Opencl = opencl
 	param.Worker_name = worker_name
+	param.ServerIndex = 0
 	return param
 }
 func (deviceInfo DeviceInfo) New(_lock sync.Mutex, _deviceId uint32, _start_time int64, _use_time int64, _solution_count int64, _hash_rate float32, _gps int64) DeviceInfo{

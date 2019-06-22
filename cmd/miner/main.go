@@ -14,6 +14,7 @@ import (
 
 var help bool
 var remote string = ""
+var remote_candidate string = ""
 var account string = ""
 var workername string = ""
 var strDeviceId string = ""
@@ -21,7 +22,8 @@ var verboseLevel int = 0
 
 func init() {
 	flag.BoolVar(&help, "help", false, "show help")
-	flag.StringVar(&remote, "pool_uri", "47.91.2.19:8009", "mining pool address")
+	flag.StringVar(&remote, "pool_uri", "cuckoo.cortexlabs.ai:8008", "mining pool address")
+	flag.StringVar(&remote_candidate, "pool_uri_candidate", "cuckoo.cortexlabs.ai:8008", "mining pool address")
 	flag.StringVar(&account, "account", "0xE893BA644128a0065B75d2c4f642615710802D4F", "miner accounts")
 	flag.StringVar(&workername, "worker", "worker111111111", "worker name")
 	flag.StringVar(&strDeviceId, "devices", "0", "which GPU device use for mining")
@@ -60,7 +62,7 @@ func main() {
 	var cortex cortexminer.Cortex
 	cm  := cortex.New(
 		deviceInfos,
-		param.New(remote, account, workername, uint(verboseLevel), 1, 1, false, true, false))
+		param.New(remote, remote_candidate, account, workername, uint(verboseLevel), 1, 1, false, true, false))
 
 	cm.Mining()
 }

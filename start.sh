@@ -15,8 +15,9 @@ done
 
 worker=`hostname`
 pool_uri='cuckoo.cortexlabs.ai:8008'
+pool_uri_candidate='cuckoo.cortexlabs.ai:8008'
 device=$str
 account='0xE893BA644128a0065B75d2c4f642615710802D4F'
-start='./build/bin/cortex_miner -pool_uri='$pool_uri' -worker='$worker' -devices='$str' -account='$account
+start='./build/bin/cortex_miner -pool_uri='$pool_uri' -pool_uri_candidate='$pool_uri_candidate' -worker='$worker' -devices='$str' -account='$account
 echo $start
 $start
