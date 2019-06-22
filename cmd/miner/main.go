@@ -22,7 +22,7 @@ var verboseLevel int = 0
 func init() {
 	flag.BoolVar(&help, "help", false, "show help")
 	flag.StringVar(&remote, "pool_uri", "47.91.2.19:8009", "mining pool address")
-	flag.StringVar(&account, "account", "0xc3d7a1ef810983847510542edfd5bc5551a6321c", "miner accounts")
+	flag.StringVar(&account, "account", "0xE893BA644128a0065B75d2c4f642615710802D4F", "miner accounts")
 	flag.StringVar(&workername, "worker", "worker111111111", "worker name")
 	flag.StringVar(&strDeviceId, "devices", "0", "which GPU device use for mining")
 	flag.IntVar(&verboseLevel, "verbosity", 0, "verbosity level")
