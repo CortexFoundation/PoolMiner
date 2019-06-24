@@ -13,12 +13,12 @@ do
  fi
 done
 
-worker=`hostname`
-pool_uri='cuckoo.cortexlabs.ai:8008'
-pool_uri_1='cuckoo.cortexlabs.ai:8008'
-pool_uri_2='cuckoo.cortexlabs.ai:8008'
+worker='your worker name'
+pool_uri='the remote pool uri, example: xxxx@xxx.com:8008'
+pool_uri_1='the first candidate pool uri'
+pool_uri_2='the second candidate pool uri'
 device=$str
-account='0xE893BA644128a0065B75d2c4f642615710802D4F'
+account='you wallet address, example:0x0000000000000000000000000'
 start='./build/bin/cortex_miner -pool_uri='$pool_uri' -pool_uri_1='$pool_uri_1' -pool_uri_2='$pool_uri_2' -worker='$worker' -devices='$str' -account='$account
 echo $start
 $start

@@ -23,12 +23,12 @@ var verboseLevel int = 0
 
 func init() {
 	flag.BoolVar(&help, "help", false, "show help")
-	flag.StringVar(&remote, "pool_uri", "cuckoo.cortexlabs.ai:8008", "mining pool address")
-	flag.StringVar(&remote1, "pool_uri_1", "cuckoo.cortexlabs.ai:8008", "mining pool address")
-	flag.StringVar(&remote2, "pool_uri_2", "cuckoo.cortexlabs.ai:8008", "mining pool address")
-	flag.StringVar(&account, "account", "0xE893BA644128a0065B75d2c4f642615710802D4F", "miner accounts")
-	flag.StringVar(&workername, "worker", "worker111111111", "worker name")
-	flag.StringVar(&strDeviceId, "devices", "0", "which GPU device use for mining")
+	flag.StringVar(&remote, "pool_uri", "", "mining pool address, need")
+	flag.StringVar(&remote1, "pool_uri_1", "", "mining pool address, option")
+	flag.StringVar(&remote2, "pool_uri_2", "", "mining pool address, option")
+	flag.StringVar(&account, "account", "", "miner accounts, need")
+	flag.StringVar(&workername, "worker", "", "worker name, option")
+	flag.StringVar(&strDeviceId, "devices", "", "which GPU devices use for mining, need")
 	flag.IntVar(&verboseLevel, "verbosity", 0, "verbosity level")
 
 	fmt.Printf("**************************************************************\n")
@@ -40,6 +40,10 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU() * 4)
 	flag.Parse()
 
+	if account == "" || remote == "" || strDeviceId == ""{
+		fmt.Println("Usage:\n ./build/bin/cortex_miner -worker(optional) -pool_uri(need) -account(need) -devices(need)\nexample:-pool_uri=localhost:8009 -account=0xc3d7a1ef810983847510542edfd5bc5551a6321c -devices=0,1")
+		return
+	}
 	var strDeviceIds []string = strings.Split(strDeviceId, ",")
 	var deviceNum int = len(strDeviceIds)
 	var deviceInfos []config.DeviceInfo
