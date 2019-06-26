@@ -1,8 +1,9 @@
 
 ### Mining Algorithm
-    The proof of work algorithm used is called Cuckoo Cycle, a graph theory-based algorithm that is far less energy-intensive than most other CPU, GPU or ASIC-bound PoW algorithms. The goal is to lower mining requirements, ensuring true decentralization and laying the foundation for future scalability.
-    Cortex utilizes CuckAroo 30, a variation of Cukoo Cycle. CuckARoo replaces Siphash-2–4 with Siphash-4–8, focusing more on memory use. The solution time is bound to memory bandwidth, making it resistant to ASIC chips. Unlike other PoW algorithms that require maxing out the capacity of your hardware and consuming a lot of power in the process, a memory-bound algorithm like CuckARoo requires far less energy than most other GPU, CPU or ASIC-bound PoW algorithms.
-    
+
+- The proof of work algorithm used is called Cuckoo Cycle, a graph theory-based algorithm that is far less energy-intensive than most other CPU, GPU or ASIC-bound PoW algorithms. The goal is to lower mining requirements, ensuring true decentralization and laying the foundation for future scalability.
+- Cortex utilizes CuckAroo 30, a variation of Cukoo Cycle. CuckARoo replaces Siphash-2–4 with Siphash-4–8, focusing more on memory use. The solution time is bound to memory bandwidth, making it resistant to ASIC chips. Unlike other PoW algorithms that require maxing out the capacity of your hardware and consuming a lot of power in the process, a memory-bound algorithm like CuckARoo requires far less energy than most other GPU, CPU or ASIC-bound PoW algorithms.
+
 ### Need:
 - CUDA Version 9.2+
 - NVIDIA Driver Version: 396.37+
