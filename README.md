@@ -10,10 +10,17 @@
 - Below is the recommended minimum requirements for the official miner. Third party miners may be available after the Mainnet release which might be optimized to use less memory.
 - Recommend: 1080ti, 2080ti, titan V, titan RTX
 
-### Step:
-1. tar -zxvf cortex_miner.tar.gz
-2. cd cortex_miner
-3. config the file: start.sh
+### Compile Source Code
+1. git clone git@github.com:CortexFoundation/PoolMiner.git
+2. cd PoolMiner
+3. make clean && make 
+4. ./start.sh or ./build/bin/cortex_miner -pool_uri=Pool_Uri:Port -account=Your_Account_Address -devices=Your_GPU_Ids
+
+### Use Release Binary:
+1. download release [cortex_miner](https://github.com/CortexFoundation/PoolMiner/releases)
+2. tar -zxvf cortex_miner.tar.gz
+3. cd cortex_miner
+4. config the file: start.sh
 ```
 worker='your worker name'
 pool_uri='the remote pool uri, example: xxxx@xxx.com:port'
@@ -31,7 +38,7 @@ pool_uri_2='127.0.0.1:port'
 device=0,1,2,3
 account='0x0000000000000000000000000'
 ```
-4. chmod +x start.sh
-5. ./start.sh or ./build/bin/cortex_miner -pool_uri=Pool_Uri:Port -account=Your_Account_Address -devices=Your_GPU_Ids
-6. Recommend Pool Uri : cuckoo.cortexmint.com:8008
-7. The Pool Link : www.cortexmint.com/
+5. chmod +x start.sh
+6. ./start.sh or ./cortex_miner -pool_uri=Pool_Uri:Port -account=Your_Account_Address -devices=Your_GPU_Ids
+7. Recommend Pool Uri : cuckoo.cortexmint.com:8008
+8. The Pool Link : www.cortexmint.com/
