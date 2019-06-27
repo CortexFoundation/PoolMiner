@@ -19,6 +19,6 @@ pool_uri_1='the first candidate pool uri'
 pool_uri_2='the second candidate pool uri'
 device=$str
 account='you wallet address, example:0x0000000000000000000000000'
-start='./build/bin/cortex_miner -pool_uri='$pool_uri' -pool_uri_1='$pool_uri_1' -pool_uri_2='$pool_uri_2' -worker='$worker' -devices='$str' -account='$account
+start='./build/bin/cortex_miner -pool_uri='$pool_uri' -pool_uri_1='$pool_uri_1' -pool_uri_2='$pool_uri_2' -worker='$worker' -devices='$device' -account='$account
 echo $start
 $start
