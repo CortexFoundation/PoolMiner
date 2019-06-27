@@ -34,3 +34,4 @@ account='0x0000000000000000000000000'
 4. chmod +x start.sh
 5. ./start.sh or ./build/bin/cortex_miner -pool_uri=Pool_Uri:Port -account=Your_Account_Address -devices=Your_GPU_Ids
 6. Recommend Pool Uri : cuckoo.cortexmint.com:8008
+7. The Pool Link : www.cortexmint.com/
