@@ -24,14 +24,14 @@ int monitor_init(unsigned int deviceCount){
 	return device_count;
 }
 
-int query_fan_tem(unsigned int device_count, unsigned int *fanSpeeds, unsigned int *temperatures){
+int query_fan_tem(unsigned int* deviceIds, unsigned int device_count, unsigned int *fanSpeeds, unsigned int *temperatures){
 	nvmlReturn_t result;	
 	for (int i = 0; i < device_count; i++)
 	{
 		nvmlDevice_t device;
 //		char name[64];
 //		nvmlPciInfo_t pci;
-		result = nvmlDeviceGetHandleByIndex (i, &device);
+		result = nvmlDeviceGetHandleByIndex (deviceIds[i], &device);
 		if (NVML_SUCCESS != result)
 		{
 			printf ("Failed to get handle for device %i: %s\n", i, nvmlErrorString (result));

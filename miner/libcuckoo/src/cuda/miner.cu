@@ -30,7 +30,8 @@ void getDeviceInfo(){
 			cudaGetDeviceProperties(&deviceProp, dev);
 			size_t freeSize, totalSize;
 			cudaMemGetInfo(&freeSize, &totalSize);
-		printf("\033[0;32;40m GPU #%d: %s, total %.0fMB, free %.0fMB, %u compute units, capability: %d.%d\033[0m \n", dev, deviceProp.name, (float)deviceProp.totalGlobalMem/1048576.0f, (float)freeSize/1048576.0f, deviceProp.multiProcessorCount, deviceProp.major, deviceProp.minor);
+      printf("\033[0;32;40m GPU #%d: %s, total %.0fMB, free %.0fMB, %u compute units, capability: %d.%d\033[0m \n", dev, deviceProp.name, (float)deviceProp.totalGlobalMem/1048576.0f, (float)freeSize/1048576.0f, deviceProp.multiProcessorCount, deviceProp.major, deviceProp.minor);
+      cudaDeviceReset();
 	}
 }
 
@@ -144,8 +145,8 @@ void CuckooInitialize(uint32_t* devices, uint32_t deviceNum, int selected = 0, i
     }
 }
 
-int monitor(unsigned int device_count, unsigned int *fanSpeeds, unsigned int *temperatures){
-	return query_fan_tem(device_count, fanSpeeds, temperatures);	
+int monitor(unsigned int* deviceIds, unsigned int device_count, unsigned int *fanSpeeds, unsigned int *temperatures){
+	return query_fan_tem(deviceIds, device_count, fanSpeeds, temperatures);	
 }
 void CuckooFinalize(){
 }
