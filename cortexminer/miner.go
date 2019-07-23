@@ -17,13 +17,14 @@ import (
 	"strconv"
 )
 
-type ReqLogin struct{
-        Id      int      `json:"id"`
-        Jsonrpc string   `json:"jsonrpc"`
-        Method  string   `json:"method"`
-        Params  []string `json:"params"`
-	Worker string `json:"worker"`
+type ReqLogin struct {
+	Id      int      `json:"id"`
+	Jsonrpc string   `json:"jsonrpc"`
+	Method  string   `json:"method"`
+	Params  []string `json:"params"`
+	Worker  string   `json:"worker"`
 }
+
 func checkError(err error, func_name string) {
 	if err != nil {
 		log.Println(func_name, err.Error())
@@ -94,7 +95,7 @@ func (cm *Cortex) init(tcpCh chan bool) {
 		server = cm.param.Server[cm.param.ServerIndex]
 		cm.param.ServerIndex = (cm.param.ServerIndex + 1) % 3
 		if server != "" {
-			break;
+			break
 		}
 	}
 	log.Println("try connect remote pool : ", server)
@@ -132,7 +133,7 @@ func (cm *Cortex) login(loginCh chan bool) {
 		Jsonrpc: "2.0",
 		Method:  "ctxc_submitLogin",
 		Params:  []string{cm.param.Account},
-		Worker : cm.param.Worker_name,
+		Worker:  cm.param.Worker_name,
 	}
 
 	cm.write_login(reqLogin)
@@ -159,7 +160,7 @@ func (cm *Cortex) submit(sol config.Task) {
 		Jsonrpc: "2.0",
 		Method:  "ctxc_submitWork",
 		Params:  []string{sol.Nonce, sol.Header, sol.Solution},
-		Worker: cm.param.Worker_name,
+		Worker:  cm.param.Worker_name,
 	}
 	cm.write_login(reqSubmit)
 }
@@ -171,10 +172,6 @@ const PLUGIN_POST_FIX string = "_helper.so"
 
 //	cortex mining
 func (cm *Cortex) Mining() {
-	var iDeviceIds []uint32
-	for i := 0; i < len(cm.deviceInfos); i++ {
-		iDeviceIds = append(iDeviceIds, cm.deviceInfos[i].DeviceId)
-	}
 
 	var minerName string = ""
 	if cm.param.Cpu == true {
@@ -196,7 +193,7 @@ func (cm *Cortex) Mining() {
 	if err != nil {
 		panic(err)
 	}
-	m.(func([]uint32, uint32, config.Param))(iDeviceIds, (uint32)(len(iDeviceIds)), cm.param)
+	m.(func([]uint32, uint32, config.Param))(cm.iDeviceIds, (uint32)(len(cm.iDeviceIds)), cm.param)
 	go func() {
 		for {
 			cm.printHashRate()
@@ -260,7 +257,7 @@ func (cm *Cortex) printHashRate() {
 	if err != nil {
 		panic(err)
 	}
-	fanSpeeds, temperatures = m.(func(uint32) ([]uint32, []uint32))(uint32(devCount))
+	fanSpeeds, temperatures = m.(func([]uint32, uint32) ([]uint32, []uint32))(cm.iDeviceIds, uint32(devCount))
 	var total_solutions int64 = 0
 	for dev := 0; dev < devCount; dev++ {
 		var dev_id = cm.deviceInfos[dev].DeviceId
