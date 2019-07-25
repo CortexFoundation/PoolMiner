@@ -2,7 +2,7 @@
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64/:/usr/local/cuda/lib64/stubs:$LD_LIBRARY_PATH
 export LIBRARY_PATH=/usr/local/cuda/lib64/:/usr/local/cuda/lib64/stubs:$LIBRARY_PATH
 export PATH=/usr/local/go/bin:/usr/local/cuda/bin/:$PATH
-NVIDIA_COUNT=`nvidia-smi -L | grep 'GeForce' | wc -l`
+NVIDIA_COUNT=`nvidia-smi -L | wc -l`
 echo "there has "$NVIDIA_COUNT "gpu"
 str=""
 for ((i=0; i < $NVIDIA_COUNT; i++))
