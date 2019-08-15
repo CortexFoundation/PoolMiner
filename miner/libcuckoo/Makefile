@@ -3,8 +3,8 @@
 
 OPT ?= -O3
 
-GCC_ARCH_FLAGS ?= -march=native
-GPP_ARCH_FLAGS ?= -march=native
+GCC_ARCH_FLAGS ?= -march=x86-64
+GPP_ARCH_FLAGS ?= -march=x86-64
 
 # -Wno-deprecated-declarations shuts up Apple OSX clang
 FLAGS ?= -O3 -Wall -Wno-format -Wno-deprecated-declarations -D_POSIX_C_SOURCE=200112L $(OPT) -DPREFETCH -I. $(CPPFLAGS) -pthread -fPIC
